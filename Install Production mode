@@ -1,3 +1,6 @@
+username: n8nuser
+Password: FIN1
+
 Understood 👍
 You are running Ubuntu inside Windows (WSL) and you have Superset in production mode on that same Ubuntu.
 You want to install n8n in a fully isolated way, WITHOUT Docker, so nothing breaks Superset.
