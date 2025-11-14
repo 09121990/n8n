@@ -1,0 +1,133 @@
+Understood 👍
+You are running Ubuntu inside Windows (WSL) and you have Superset in production mode on that same Ubuntu.
+You want to install n8n in a fully isolated way, WITHOUT Docker, so nothing breaks Superset.
+Perfect. You can install n8n completely isolated using Node.js + PM2 + a separate Linux user + isolated directory.
+Below is the safest method.
+
+✅ Best & Safest Method: Install n8n Fully Isolated (No Docker)
+This method ensures:
+
+
+n8n runs under a separate Linux user
+
+
+Does not touch system packages
+
+
+Does not conflict with Superset Python virtualenv
+
+
+Runs in background as a systemd service or PM2 process
+
+
+
+Step 1 — Create a Separate User Only for n8n
+This ensures perfect isolation.
+sudo adduser n8nuser
+sudo usermod -aG sudo n8nuser
+
+Switch to the new user:
+su - n8nuser
+
+
+Step 2 — Install Node Version Manager (NVM)
+Using NVM keeps Node fully isolated.
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+source ~/.bashrc
+
+Check installation:
+nvm --version
+
+
+Step 3 — Install Required Node Version
+n8n supports Node 18 or 20.
+Install Node 18:
+nvm install 18
+nvm use 18
+
+Make default:
+nvm alias default 18
+
+
+Step 4 — Install n8n Globally for n8nuser
+Still isolated to this user’s environment.
+npm install -g n8n
+
+Check:
+n8n --version
+
+
+Step 5 — Create a Directory for n8n Data
+mkdir ~/n8n_data
+
+
+Step 6 — Run n8n Once to Verify
+n8n
+
+Open in browser:
+http://localhost:5678
+
+Stop with:
+Ctrl + C
+
+Step 7 — Run n8n in Background Using PM2 (Recommended)
+Install PM2:
+npm install -g pm2
+
+Start n8n:
+pm2 start n8n
+
+Save the PM2 state:
+pm2 save
+
+Enable PM2 auto-start (very important):
+pm2 startup
+
+Follow the instruction PM2 prints (copy & run the provided command).
+
+Step 8 — Open n8n in Browser
+http://localhost:5678
+
+
+🎉 Now you have:
+
+
+Superset running on your Ubuntu WSL
+
+
+n8n running separately under its own user, isolated
+
+
+No Docker required
+
+
+No conflicts with Superset or system Python
+
+
+PM2 keeps n8n running permanently
+
+
+
+🔐 Optional Hardening (Recommended)
+Isolate environment variables for n8n:
+Edit:
+nano ~/.bashrc
+
+Add:
+export N8N_USER_FOLDER=/home/n8nuser/n8n_data
+export N8N_PORT=5678
+
+Reload:
+source ~/.bashrc
+
+Restart n8n:
+pm2 restart n8n
+
+
+✔ This is the cleanest & safest full isolation method without Docker.
+If you want, I can also give you:
+✅ systemd (service file) version
+✅ HTTPS + reverse proxy (NGINX) for n8n
+✅ Change n8n port
+✅ Install PostgreSQL for n8n instead of SQLite
+Which one do you want next?
